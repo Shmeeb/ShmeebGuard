@@ -36,10 +36,6 @@ public class Region {
         return flagTypes;
     }
 
-    public List<String> getFlagTypeStrings() {
-        return flagTypes.stream().map(Enum::name).collect(Collectors.toList());
-    }
-
     public void updateFlagTypes(List<FlagTypes> flagTypes) {
         this.flagTypes = flagTypes;
         List<String> stringFlagTypes = flagTypes.stream().map(Enum::name).collect(Collectors.toList());

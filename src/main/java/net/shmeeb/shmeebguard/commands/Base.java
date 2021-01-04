@@ -31,12 +31,3 @@ public class Base implements CommandExecutor {
                 .build();
     }
 }
-
-/*
-
-
-    /sg create/delete/list [name]
-    /sg edit <region> <key> <value>
-    /sg reload/help
-
-     */

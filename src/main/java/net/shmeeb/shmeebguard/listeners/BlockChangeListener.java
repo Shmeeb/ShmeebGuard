@@ -35,6 +35,13 @@ public class BlockChangeListener implements EventListener<ChangeBlockEvent> {
         if (!location.isPresent()) return;
         Optional<Region> region = ShmeebGuard.getRegionManager().getRegionAtPosition(location.get());
         if (!region.isPresent()) return;
+
+        if (event instanceof ChangeBlockEvent.Decay) {
+            if (!region.get().getFlagTypes().contains(FlagTypes.DECAY)) return;
+            event.setCancelled(true);
+            return;
+        }
+
         if (!region.get().getFlagTypes().contains(FlagTypes.BLOCK_CHANGE)) return;
         User user;
 
@@ -48,7 +55,7 @@ public class BlockChangeListener implements EventListener<ChangeBlockEvent> {
 
         if (user instanceof Player) {
             Player player = (Player) user;
-            player.sendMessage(ChatTypes.ACTION_BAR, Text.of("You don't have permission!"));
+            player.sendMessage(ChatTypes.ACTION_BAR, Utils.getText("&cYou don't have permission!"));
         }
 
         event.setCancelled(true);

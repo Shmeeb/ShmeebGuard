@@ -5,6 +5,7 @@ import net.shmeeb.shmeebguard.ShmeebGuard;
 import net.shmeeb.shmeebguard.objects.FlagTypes;
 import net.shmeeb.shmeebguard.objects.Region;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.monster.Creeper;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.EventListener;
@@ -28,6 +29,12 @@ public class SpawnEntityListener implements EventListener<SpawnEntityEvent> {
                 Optional<Region> region = ShmeebGuard.getRegionManager().getRegionAtPosition(entity.getLocation());
                 if (!region.isPresent()) return;
                 if (!region.get().getFlagTypes().contains(FlagTypes.SPAWN_POKEMON)) return;
+                event.setCancelled(true);
+                return;
+            } else if (entity instanceof Item) {
+                Optional<Region> region = ShmeebGuard.getRegionManager().getRegionAtPosition(entity.getLocation());
+                if (!region.isPresent()) return;
+                if (!region.get().getFlagTypes().contains(FlagTypes.DROP_ITEMS)) return;
                 event.setCancelled(true);
                 return;
             }
