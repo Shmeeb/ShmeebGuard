@@ -7,13 +7,15 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.EventListener;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 
 import java.util.Optional;
 
 public class DamageListener implements EventListener<DamageEntityEvent> {
 
-    @Override
+    @Listener(order = Order.EARLY)
     public void handle(DamageEntityEvent event) {
         if (event.isCancelled()) return;
         Entity entity = event.getTargetEntity();

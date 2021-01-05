@@ -68,7 +68,7 @@ public class RegionManager {
         return Optional.empty();
     }
 
-    public Optional<List<Region>> getRegionsAtPosition(Location<World> location) {
+    public Optional<List<Region>> getAllRegionsAtPosition(Location<World> location) {
         if (!regions.containsKey(location.getExtent().getName())) return Optional.empty();
         List<Region> options = new ArrayList<>();
         Vector3d pos =  location.getPosition();

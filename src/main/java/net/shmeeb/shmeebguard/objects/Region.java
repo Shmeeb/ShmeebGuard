@@ -48,7 +48,7 @@ public class Region {
     @Override
     public String toString() {
         return "name: " + name + ", world: " + worldName
-                + ", 1: (" + box.getMin().getFloorX() + "," + box.getMin().getFloorY() + "," + box.getMin().getFloorZ() + ")"
-                + ", 2: (" + box.getMax().getFloorX() + "," + box.getMax().getFloorY() + "," + box.getMax().getFloorZ() + ")";
+                + ", pos1: (" + box.getMin().getFloorX() + "," + box.getMin().getFloorY() + "," + box.getMin().getFloorZ() + ")"
+                + ", pos2: (" + box.getMax().getFloorX() + "," + box.getMax().getFloorY() + "," + box.getMax().getFloorZ() + ")";
     }
 }

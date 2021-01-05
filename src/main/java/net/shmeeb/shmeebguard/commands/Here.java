@@ -17,7 +17,7 @@ public class Here implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args)  {
         Player player = (Player) src;
-        Optional<List<Region>> regions = ShmeebGuard.getRegionManager().getRegionsAtPosition(player.getLocation());
+        Optional<List<Region>> regions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(player.getLocation());
 
         if (!regions.isPresent()) {
             player.sendMessage(Utils.getText("&cNo regions found"));

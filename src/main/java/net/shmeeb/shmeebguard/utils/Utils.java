@@ -34,7 +34,7 @@ public class Utils {
         MessageChannel.TO_CONSOLE.send(text);
 
         Sponge.getServer().getOnlinePlayers().forEach(p -> {
-            if (p.hasPermission("shmeebguard.use")) {
+            if (p.hasPermission(ShmeebGuard.PERM)) {
                 p.sendMessage(text);
             }
         });

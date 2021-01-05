@@ -29,6 +29,10 @@ public class SpawnEntityListener implements EventListener<SpawnEntityEvent> {
                 Optional<Region> region = ShmeebGuard.getRegionManager().getRegionAtPosition(entity.getLocation());
                 if (!region.isPresent()) return;
                 if (!region.get().getFlagTypes().contains(FlagTypes.SPAWN_POKEMON)) return;
+
+//                EntityPixelmon poke = (EntityPixelmon) entity;
+//                System.out.println("should cancel poke spawn: " + poke.getSpecies());
+
                 event.setCancelled(true);
                 return;
             } else if (entity instanceof Item) {
