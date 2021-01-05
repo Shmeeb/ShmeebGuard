@@ -37,13 +37,13 @@ public class Create implements CommandExecutor {
 
         try {
             box = new AABB(
-                    selection.getMinimumPoint().getX(),
-                    selection.getMinimumPoint().getY(),
-                    selection.getMinimumPoint().getZ(),
+                    selection.getMinimumPoint().getBlockX(),
+                    selection.getMinimumPoint().getBlockY(),
+                    selection.getMinimumPoint().getBlockZ(),
 
-                    selection.getMaximumPoint().getX(),
-                    selection.getMaximumPoint().getY(),
-                    selection.getMaximumPoint().getZ()
+                    selection.getMaximumPoint().getBlockX(),
+                    selection.getMaximumPoint().getBlockY(),
+                    selection.getMaximumPoint().getBlockZ()
             );
         } catch (Exception e) {
             if (e instanceof IllegalArgumentException) {

@@ -6,6 +6,7 @@ import net.shmeeb.shmeebguard.objects.Region;
 import org.spongepowered.api.event.EventListener;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
 
+import java.util.List;
 import java.util.Optional;
 
 public class InteractEntityListener implements EventListener<InteractEntityEvent> {
@@ -13,16 +14,21 @@ public class InteractEntityListener implements EventListener<InteractEntityEvent
     @Override
     public void handle(InteractEntityEvent event) {
         if (event.isCancelled()) return;
+        Optional<List<Region>> regions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(event.getTargetEntity().getLocation());
+        if (!regions.isPresent()) return;
 
-        Optional<Region> region = ShmeebGuard.getRegionManager().getRegionAtPosition(event.getTargetEntity().getLocation());
-        if (!region.isPresent()) return;
+        for (Region region : regions.get()) {
 
-        if (event instanceof InteractEntityEvent.Primary) {
-            if (!region.get().getFlagTypes().contains(FlagTypes.INTERACT_ENTITY_PRIMARY)) return;
-        } else if (event instanceof InteractEntityEvent.Secondary) {
-            if (!region.get().getFlagTypes().contains(FlagTypes.INTERACT_ENTITY_SECONDARY)) return;
+            if (event instanceof InteractEntityEvent.Primary) {
+                if (!region.getFlagTypes().contains(FlagTypes.INTERACT_ENTITY_PRIMARY)) continue;
+                event.setCancelled(true);
+                return;
+            } else if (event instanceof InteractEntityEvent.Secondary) {
+                if (!region.getFlagTypes().contains(FlagTypes.INTERACT_ENTITY_SECONDARY)) continue;
+                event.setCancelled(true);
+                return;
+            }
+
         }
-
-        event.setCancelled(true);
     }
 }

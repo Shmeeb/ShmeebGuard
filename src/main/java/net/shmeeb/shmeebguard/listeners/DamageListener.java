@@ -11,21 +11,23 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 
+import java.util.List;
 import java.util.Optional;
 
 public class DamageListener implements EventListener<DamageEntityEvent> {
 
-    @Listener(order = Order.EARLY)
+    @Override
     public void handle(DamageEntityEvent event) {
         if (event.isCancelled()) return;
         Entity entity = event.getTargetEntity();
+        if (!(entity instanceof Player)) return;
+        Optional<List<Region>> regions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(entity.getLocation());
+        if (!regions.isPresent()) return;
 
-        if (entity instanceof Player) {
-            Optional<Region> region = ShmeebGuard.getRegionManager().getRegionAtPosition(entity.getLocation());
-            if (!region.isPresent()) return;
-            if (!region.get().getFlagTypes().contains(FlagTypes.PLAYERS_TAKE_DAMAGE)) return;
-
+        for (Region region : regions.get()) {
+            if (!region.getFlagTypes().contains(FlagTypes.PLAYERS_TAKE_DAMAGE)) continue;
             event.setCancelled(true);
+            return;
         }
     }
 }

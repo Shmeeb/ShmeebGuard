@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class RegionManager {
-    private HashMap<String, List<Region>> regions = new HashMap<>();
+    private HashMap<String, List<Region>> regionsMap = new HashMap<>();
 
     public RegionManager() {
         loadRegions();
@@ -48,10 +48,10 @@ public class RegionManager {
                 ShmeebGuard.getInstance().getLogger().error("Couldn't find any flag types for the region " + name);
             }
 
-            List<Region> current = regions.getOrDefault(world, new ArrayList<>());
+            List<Region> current = regionsMap.getOrDefault(world, new ArrayList<>());
             current.add(new Region(name, box, world, types));
 
-            regions.put(world, current);
+            regionsMap.put(world, current);
             count++;
         }
 
@@ -59,7 +59,7 @@ public class RegionManager {
     }
 
     public Optional<Region> getRegion(String name) {
-        for (Map.Entry<String, List<Region>> entry : regions.entrySet()) {
+        for (Map.Entry<String, List<Region>> entry : regionsMap.entrySet()) {
             for (Region region : entry.getValue()) {
                 if (region.getName().equalsIgnoreCase(name)) return Optional.of(region);
             }
@@ -69,27 +69,27 @@ public class RegionManager {
     }
 
     public Optional<List<Region>> getAllRegionsAtPosition(Location<World> location) {
-        if (!regions.containsKey(location.getExtent().getName())) return Optional.empty();
+        if (!regionsMap.containsKey(location.getExtent().getName())) return Optional.empty();
         List<Region> options = new ArrayList<>();
         Vector3d pos =  location.getPosition();
 
-        for (Region region : regions.get(location.getExtent().getName())) {
+        for (Region region : regionsMap.get(location.getExtent().getName())) {
             if (region.getBox().contains(pos)) options.add(region);
         }
 
         return options.isEmpty() ? Optional.empty() : Optional.of(options);
     }
 
-    public Optional<Region> getRegionAtPosition(Location<World> location) {
-        if (!regions.containsKey(location.getExtent().getName())) return Optional.empty();
-        Vector3d pos =  location.getPosition();
-
-        for (Region region : regions.get(location.getExtent().getName())) {
-            if (region.getBox().contains(pos)) return Optional.of(region);
-        }
-
-        return Optional.empty();
-    }
+//    public Optional<Region> getRegionAtPosition(Location<World> location) {
+//        if (!regionsMap.containsKey(location.getExtent().getName())) return Optional.empty();
+//        Vector3d pos =  location.getPosition();
+//
+//        for (Region region : regionsMap.get(location.getExtent().getName())) {
+//            if (region.getBox().contains(pos)) return Optional.of(region);
+//        }
+//
+//        return Optional.empty();
+//    }
 
     public void deleteRegion(String name) {
         Optional<Region> region = getRegion(name);
@@ -99,10 +99,10 @@ public class RegionManager {
         data_root.getNode("regions", region.get().getName()).setValue(null);
         ShmeebGuard.setData(data_root);
 
-        List<Region> current = regions.getOrDefault(region.get().getWorldName(), new ArrayList<>());
+        List<Region> current = regionsMap.getOrDefault(region.get().getWorldName(), new ArrayList<>());
         current.removeIf(r -> r.getName().equalsIgnoreCase(region.get().getName()));
 
-        regions.put(region.get().getWorldName(), current);
+        regionsMap.put(region.get().getWorldName(), current);
     }
 
     public void createRegion(Region region) {
@@ -119,13 +119,20 @@ public class RegionManager {
         data_root.getNode("regions", region.getName(), "z2").setValue(region.getBox().getMax().getZ());
 
         ShmeebGuard.setData(data_root);
-        List<Region> current = regions.getOrDefault(region.getWorldName(), new ArrayList<>());
+        List<Region> current = regionsMap.getOrDefault(region.getWorldName(), new ArrayList<>());
         current.add(region);
 
-        regions.put(region.getWorldName(), current);
+        regionsMap.put(region.getWorldName(), current);
     }
 
-    public HashMap<String, List<Region>> getRegions() {
-        return regions;
+    public List<Region> getAllRegions() {
+        List<Region> r = new ArrayList<>();
+        regionsMap.forEach((key, value) -> r.addAll(value));
+
+        return r;
+    }
+
+    public HashMap<String, List<Region>> getRegionsMap() {
+        return regionsMap;
     }
 }

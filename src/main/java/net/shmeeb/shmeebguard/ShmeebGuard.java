@@ -98,7 +98,7 @@ public class ShmeebGuard {
         registerListener(ChangeBlockEvent.class, Order.LATE, new BlockChangeListener());
         registerListener(SpawnEntityEvent.class, Order.LATE, new SpawnEntityListener());
         registerListener(InteractEntityEvent.class, Order.LATE, new InteractEntityListener());
-        registerListener(DamageEntityEvent.class, Order.LATE, new DamageListener());
+        registerListener(DamageEntityEvent.class, Order.EARLY, new DamageListener());
     }
 
     public <T extends Event> void registerListener(Class<T> eventClass, Order order, EventListener<? super T> listener) {

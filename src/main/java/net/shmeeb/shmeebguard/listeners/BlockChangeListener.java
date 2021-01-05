@@ -1,10 +1,12 @@
 package net.shmeeb.shmeebguard.listeners;
 
+import com.google.common.collect.Lists;
 import net.shmeeb.shmeebguard.ShmeebGuard;
 import net.shmeeb.shmeebguard.objects.FlagTypes;
 import net.shmeeb.shmeebguard.objects.Region;
 import net.shmeeb.shmeebguard.utils.Utils;
 import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.living.player.Player;
@@ -17,9 +19,12 @@ import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import java.util.List;
 import java.util.Optional;
 
 public class BlockChangeListener implements EventListener<ChangeBlockEvent> {
+    List<BlockType> ice = Lists.newArrayList(BlockTypes.ICE, BlockTypes.PACKED_ICE);
+
     @Override
     public void handle(ChangeBlockEvent event) {
         if (event.isCancelled() || event instanceof ExplosionEvent || event.getTransactions().isEmpty()) return;
@@ -33,32 +38,46 @@ public class BlockChangeListener implements EventListener<ChangeBlockEvent> {
 
         Optional<Location<World>> location = Utils.getLocation(event.getTransactions().get(0));
         if (!location.isPresent()) return;
-        Optional<Region> region = ShmeebGuard.getRegionManager().getRegionAtPosition(location.get());
-        if (!region.isPresent()) return;
+        Optional<List<Region>> regions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(location.get());
+        if (!regions.isPresent()) return;
 
-        if (event instanceof ChangeBlockEvent.Decay) {
-            if (!region.get().getFlagTypes().contains(FlagTypes.DECAY)) return;
+        for (Region region : regions.get()) {
+
+            if (region.getFlagTypes().contains(FlagTypes.DECAY)) {
+
+                if (event instanceof ChangeBlockEvent.Decay) {
+                    event.setCancelled(true);
+                    return;
+                } else if (event instanceof ChangeBlockEvent.Post) {
+
+                    if (ice.contains(event.getTransactions().get(0).getOriginal().getState().getType())
+                            && event.getTransactions().get(0).getFinal().getState().getType().equals(BlockTypes.WATER)) {
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+
+            }
+
+            if (!region.getFlagTypes().contains(FlagTypes.BLOCK_CHANGE)) continue;
+            User user;
+
+            if (event.getCause().containsType(Player.class)) {
+                user = event.getCause().first(Player.class).get();
+            } else if (event.getCause().containsType(User.class)) {
+                user = event.getCause().first(User.class).get();
+            } else {
+                user = null;
+            }
+
+            if (user instanceof Player) {
+                Player player = (Player) user;
+                player.sendMessage(ChatTypes.ACTION_BAR, Utils.getText("&cYou don't have permission!"));
+            }
+
             event.setCancelled(true);
             return;
         }
-
-        if (!region.get().getFlagTypes().contains(FlagTypes.BLOCK_CHANGE)) return;
-        User user;
-
-        if (event.getCause().containsType(Player.class)) {
-            user = event.getCause().first(Player.class).get();
-        } else if (event.getCause().containsType(User.class)) {
-            user = event.getCause().first(User.class).get();
-        } else {
-            user = null;
-        }
-
-        if (user instanceof Player) {
-            Player player = (Player) user;
-            player.sendMessage(ChatTypes.ACTION_BAR, Utils.getText("&cYou don't have permission!"));
-        }
-
-        event.setCancelled(true);
 
 //        if (user != null && user.isOnline() && user.hasPermission("shmeebguard.bypass")) return;
 

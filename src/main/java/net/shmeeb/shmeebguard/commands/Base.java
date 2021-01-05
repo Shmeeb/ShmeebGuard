@@ -8,14 +8,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
 
-public class Base implements CommandExecutor {
-    @Override
-    public CommandResult execute(CommandSource src, CommandContext args) {
-
-        src.sendMessage(Utils.getText("todo"));
-
-        return CommandResult.success();
-    }
+public class Base {
 
     public static CommandSpec build() {
         return CommandSpec.builder()
@@ -27,7 +20,6 @@ public class Base implements CommandExecutor {
                 .child(Here.build(), "here")
                 .child(List.build(), "list")
                 .child(Reload.build(), "reload")
-                .executor(new Base())
                 .build();
     }
 }

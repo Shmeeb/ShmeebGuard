@@ -9,23 +9,17 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
 
-import java.util.Map;
-
 public class List implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args)  {
-        boolean found = false;
+        java.util.List<Region> regions = ShmeebGuard.getRegionManager().getAllRegions();
 
-        for (Map.Entry<String, java.util.List<Region>> entry : ShmeebGuard.getRegionManager().getRegions().entrySet()) {
-            for (Region region : entry.getValue()) {
-                found = true;
-                src.sendMessage(Utils.getText(region.toString()));
-            }
-        }
-
-        if (!found) {
+        if (regions.isEmpty()) {
             src.sendMessage(Utils.getText("&cNo regions found"));
+            return CommandResult.success();
         }
+
+        regions.forEach(region -> src.sendMessage(Utils.getText(region.toString())));
 
         return CommandResult.success();
     }

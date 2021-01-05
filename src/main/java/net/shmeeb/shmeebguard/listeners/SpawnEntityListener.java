@@ -19,29 +19,24 @@ public class SpawnEntityListener implements EventListener<SpawnEntityEvent> {
     @Override
     public void handle(SpawnEntityEvent event) {
         if (event.isCancelled()) return;
-        List<Entity> entities = event.getEntities();
-        if (entities.isEmpty()) return;
+        if (event.getEntities().isEmpty()) return;
+        Entity entity = event.getEntities().get(0);
 
-        for (Entity entity : entities) {
-//            if (entity instanceof Player) return;
+        Optional<List<Region>> regions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(entity.getLocation());
+        if (!regions.isPresent()) return;
+
+        for (Region region : regions.get()) {
 
             if (entity instanceof EntityPixelmon) {
-                Optional<Region> region = ShmeebGuard.getRegionManager().getRegionAtPosition(entity.getLocation());
-                if (!region.isPresent()) return;
-                if (!region.get().getFlagTypes().contains(FlagTypes.SPAWN_POKEMON)) return;
-
-//                EntityPixelmon poke = (EntityPixelmon) entity;
-//                System.out.println("should cancel poke spawn: " + poke.getSpecies());
-
+                if (!region.getFlagTypes().contains(FlagTypes.SPAWN_POKEMON)) continue;
                 event.setCancelled(true);
                 return;
             } else if (entity instanceof Item) {
-                Optional<Region> region = ShmeebGuard.getRegionManager().getRegionAtPosition(entity.getLocation());
-                if (!region.isPresent()) return;
-                if (!region.get().getFlagTypes().contains(FlagTypes.DROP_ITEMS)) return;
+                if (!region.getFlagTypes().contains(FlagTypes.DROP_ITEMS)) continue;
                 event.setCancelled(true);
                 return;
             }
+
         }
     }
 }
