@@ -19,7 +19,7 @@ public class List implements CommandExecutor {
             return CommandResult.success();
         }
 
-        regions.forEach(region -> src.sendMessage(Utils.getText(region.toString())));
+        regions.forEach(region -> src.sendMessage(region.toText()));
 
         return CommandResult.success();
     }

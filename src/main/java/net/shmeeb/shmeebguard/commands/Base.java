@@ -17,6 +17,7 @@ public class Base {
                 .child(Debug.build(), "debug")
                 .child(Delete.build(), "delete")
                 .child(Edit.build(), "edit")
+                .child(Redefine.build(), "redefine")
                 .child(Here.build(), "here")
                 .child(List.build(), "list")
                 .child(Reload.build(), "reload")

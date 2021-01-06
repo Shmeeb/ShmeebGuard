@@ -25,7 +25,7 @@ public class Here implements CommandExecutor {
         }
 
         for (Region region : regions.get()) {
-            player.sendMessage(Utils.getText("&a" + region.toString()));
+            player.sendMessage(region.toText());
         }
 
         return CommandResult.success();

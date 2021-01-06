@@ -3,6 +3,7 @@ package net.shmeeb.shmeebguard.commands;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.regions.Region;
 import net.shmeeb.shmeebguard.ShmeebGuard;
+import net.shmeeb.shmeebguard.objects.FlagTypes;
 import net.shmeeb.shmeebguard.utils.Utils;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -14,17 +15,20 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.AABB;
 
-public class Create implements CommandExecutor {
+import java.util.List;
+import java.util.Optional;
+
+public class Redefine implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args)  {
         Player player = (Player) src;
-        String world = args.<String>getOne(Text.of("world")).orElse(player.getWorld().getName());
         String name = args.<String>getOne(Text.of("name")).get();
+        Optional<net.shmeeb.shmeebguard.objects.Region> region = ShmeebGuard.getRegionManager().getRegion(name);
         Region selection;
         AABB box = null;
 
-        if (ShmeebGuard.getRegionManager().getRegion(name).isPresent()) {
-            src.sendMessage(Utils.getText("&cA region with that name already exists"));
+        if (!region.isPresent()) {
+            src.sendMessage(Utils.getText("&cA region with that doesn't exist"));
             return CommandResult.success();
         }
 
@@ -64,10 +68,13 @@ public class Create implements CommandExecutor {
             }
         }
 
-        net.shmeeb.shmeebguard.objects.Region region = new net.shmeeb.shmeebguard.objects.Region(name, box, world, null);
-        ShmeebGuard.getRegionManager().createRegion(region);
+        List<FlagTypes> flagTypes = region.get().getFlagTypes();
 
-        player.sendMessage(Utils.getText("&aSuccessfully created region. ").concat(region.toText()));
+        ShmeebGuard.getRegionManager().deleteRegion(name);
+        net.shmeeb.shmeebguard.objects.Region newRegion = new net.shmeeb.shmeebguard.objects.Region(name, box, player.getWorld().getName(), flagTypes);
+        ShmeebGuard.getRegionManager().createRegion(newRegion);
+
+        player.sendMessage(Utils.getText("&aSuccessfully redefined region. ").concat(region.get().toText()));
 
         return CommandResult.success();
     }
@@ -75,9 +82,8 @@ public class Create implements CommandExecutor {
     static CommandSpec build() {
         return CommandSpec.builder()
                 .arguments(
-                        GenericArguments.string(Text.of("name")),
-                        GenericArguments.optional(GenericArguments.string(Text.of("world")))
-                ).executor(new Create())
+                        GenericArguments.string(Text.of("name"))
+                ).executor(new Redefine())
                 .build();
     }
 }

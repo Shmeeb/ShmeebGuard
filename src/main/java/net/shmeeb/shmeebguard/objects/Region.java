@@ -1,7 +1,11 @@
 package net.shmeeb.shmeebguard.objects;
 
 import net.shmeeb.shmeebguard.ShmeebGuard;
+import net.shmeeb.shmeebguard.utils.Utils;
 import ninja.leaping.configurate.ConfigurationNode;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
+import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.AABB;
 
 import java.util.ArrayList;
@@ -45,10 +49,38 @@ public class Region {
         ShmeebGuard.setData(data_root);
     }
 
-    @Override
-    public String toString() {
-        return "name: " + name + ", world: " + worldName
-                + ", pos1: (" + box.getMin().getFloorX() + "," + box.getMin().getFloorY() + "," + box.getMin().getFloorZ() + ")"
-                + ", pos2: (" + box.getMax().getFloorX() + "," + box.getMax().getFloorY() + "," + box.getMax().getFloorZ() + ")";
+    public Text toText() {
+        Text hover = Text.of(TextColors.YELLOW, "Current flags for ", name, Text.NEW_LINE);
+
+        for (int i = 0; i < FlagTypes.values().length; i++) {
+            Text current_line = flagTypes.contains(FlagTypes.values()[i]) ? Text.of(TextColors.RED, "DENY") : Text.of(TextColors.GREEN, "ALLOW");
+            Text new_line = i == FlagTypes.values().length - 1 ? Text.EMPTY : Text.NEW_LINE;
+
+            hover = hover.concat(Text.of(TextColors.GRAY, FlagTypes.values()[i].name(), ": ", current_line, new_line));
+        }
+
+        Text flags = Utils.getText(" &d[flags]").toBuilder()
+                .onHover(TextActions.showText(hover))
+                .onClick(TextActions.suggestCommand("/sg edit " + name + " "))
+                .build();
+
+        Text pos1 = Utils.getText(" &d[pos1]").toBuilder()
+                .onHover(TextActions.showText(Utils.getText("&aClick to teleport to:")
+                        .concat(Text.NEW_LINE).concat(Utils.getText("&7x: " + box.getMin().getFloorX() + ", y: " + box.getMin().getFloorY() + ", z: " + box.getMin().getFloorZ()))))
+                .onClick(TextActions.runCommand("/tppos " + box.getMin().getFloorX() + "," + box.getMin().getFloorY() + "," + box.getMin().getFloorZ()))
+                .build();
+
+        Text pos2 = Utils.getText(" &d[pos2]").toBuilder()
+                .onHover(TextActions.showText(Utils.getText("&aClick to teleport to:")
+                        .concat(Text.NEW_LINE).concat(Utils.getText("&7x: " + box.getMax().getFloorX() + ", y: " + box.getMax().getFloorY() + ", z: " + box.getMax().getFloorZ()))))
+                .onClick(TextActions.runCommand("/tppos " + box.getMax().getFloorX() + "," + box.getMax().getFloorY() + "," + box.getMax().getFloorZ()))
+                .build();
+
+        Text del = Utils.getText(" &c[del]").toBuilder()
+                .onHover(TextActions.showText(Utils.getText("&cClick to delete")))
+                .onClick(TextActions.runCommand("/sg delete " + name))
+                .build();
+
+        return Utils.getText("&eName: &a" + name + " &eWorld: &a" + worldName).concat(flags).concat(pos1).concat(pos2).concat(del);
     }
 }
