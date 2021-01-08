@@ -1,5 +1,6 @@
 package net.shmeeb.shmeebguard.listeners;
 
+import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import net.shmeeb.shmeebguard.ShmeebGuard;
 import net.shmeeb.shmeebguard.objects.FlagTypes;
 import net.shmeeb.shmeebguard.objects.Region;
@@ -20,13 +21,28 @@ public class InteractEntityListener implements EventListener<InteractEntityEvent
         for (Region region : regions.get()) {
 
             if (event instanceof InteractEntityEvent.Primary) {
-                if (!region.getFlagTypes().contains(FlagTypes.INTERACT_ENTITY_PRIMARY)) continue;
-                event.setCancelled(true);
-                return;
+
+                if (event.getTargetEntity() instanceof EntityPixelmon && region.getFlagTypes().contains(FlagTypes.INTERACT_POKEMON)) {
+                    event.setCancelled(true);
+                    return;
+                }
+
+                if (region.getFlagTypes().contains(FlagTypes.INTERACT_ENTITY_PRIMARY)) {
+                    event.setCancelled(true);
+                    return;
+                }
+
             } else if (event instanceof InteractEntityEvent.Secondary) {
-                if (!region.getFlagTypes().contains(FlagTypes.INTERACT_ENTITY_SECONDARY)) continue;
-                event.setCancelled(true);
-                return;
+
+                if (event.getTargetEntity() instanceof EntityPixelmon && region.getFlagTypes().contains(FlagTypes.INTERACT_POKEMON)) {
+                    event.setCancelled(true);
+                    return;
+                }
+
+                if (region.getFlagTypes().contains(FlagTypes.INTERACT_ENTITY_SECONDARY)) {
+                    event.setCancelled(true);
+                    return;
+                }
             }
 
         }
