@@ -14,12 +14,20 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.AABB;
 
+import java.util.Optional;
+
 public class Create implements CommandExecutor {
+
+    //sg create name world x1 z1 x2 z2
+
     @Override
     public CommandResult execute(CommandSource src, CommandContext args)  {
-        Player player = (Player) src;
-        String world = args.<String>getOne(Text.of("world")).orElse(player.getWorld().getName());
         String name = args.<String>getOne(Text.of("name")).get();
+        Optional<String> world = args.<String>getOne(Text.of("world"));
+        Optional<Integer> x1 = args.getOne(Text.of("x1"));
+        Optional<Integer> z1 = args.getOne(Text.of("z1"));
+        Optional<Integer> x2 = args.getOne(Text.of("x2"));
+        Optional<Integer> z2 = args.getOne(Text.of("z2"));
         Region selection;
         AABB box = null;
 
@@ -29,22 +37,41 @@ public class Create implements CommandExecutor {
         }
 
         try {
-            selection = WorldEdit.getInstance().getSession(player.getName()).getWorldSelection();
-        } catch (Exception e) {
-            src.sendMessage(Utils.getText("&cPlease select a cuboid region with the WorldEdit wand"));
-            return CommandResult.success();
-        }
 
-        try {
-            box = new AABB(
-                    selection.getMinimumPoint().getBlockX(),
-                    selection.getMinimumPoint().getBlockY(),
-                    selection.getMinimumPoint().getBlockZ(),
+            if (world.isPresent() && x1.isPresent() && z1.isPresent() && x2.isPresent() && z2.isPresent()) {
+                box = new AABB(
+                        x1.get(),
+                        0,
+                        z1.get(),
+                        x2.get(),
+                        255,
+                        z2.get()
+                );
+            } else if (src instanceof Player) {
+                Player player = (Player) src;
+                world = Optional.of(player.getWorld().getName());
 
-                    selection.getMaximumPoint().getBlockX(),
-                    selection.getMaximumPoint().getBlockY(),
-                    selection.getMaximumPoint().getBlockZ()
-            );
+                try {
+                    selection = WorldEdit.getInstance().getSession(player.getName()).getWorldSelection();
+                } catch (Exception e) {
+                    src.sendMessage(Utils.getText("&cPlease select a cuboid region with the WorldEdit wand"));
+                    return CommandResult.success();
+                }
+
+                box = new AABB(
+                        selection.getMinimumPoint().getBlockX(),
+                        selection.getMinimumPoint().getBlockY(),
+                        selection.getMinimumPoint().getBlockZ(),
+
+                        selection.getMaximumPoint().getBlockX(),
+                        selection.getMaximumPoint().getBlockY(),
+                        selection.getMaximumPoint().getBlockZ()
+                );
+            } else {
+                src.sendMessage(Utils.getText("&cEither select a region with WorldEdit or specify the location like so: /sg create <name> <world> <x1> <z1> <x2> <z2>"));
+                return CommandResult.success();
+            }
+
         } catch (Exception e) {
             if (e instanceof IllegalArgumentException) {
                 switch (e.getMessage()) {
@@ -64,10 +91,9 @@ public class Create implements CommandExecutor {
             }
         }
 
-        net.shmeeb.shmeebguard.objects.Region region = new net.shmeeb.shmeebguard.objects.Region(name, box, world, null);
+        net.shmeeb.shmeebguard.objects.Region region = new net.shmeeb.shmeebguard.objects.Region(name, box, world.get(), null);
         ShmeebGuard.getRegionManager().createRegion(region);
-
-        player.sendMessage(Utils.getText("&aSuccessfully created region. ").concat(region.toText()));
+        src.sendMessage(Utils.getText("&aSuccessfully created region: ").concat(region.toText()));
 
         return CommandResult.success();
     }
@@ -76,7 +102,11 @@ public class Create implements CommandExecutor {
         return CommandSpec.builder()
                 .arguments(
                         GenericArguments.string(Text.of("name")),
-                        GenericArguments.optional(GenericArguments.string(Text.of("world")))
+                        GenericArguments.optional(GenericArguments.string(Text.of("world"))),
+                        GenericArguments.optional(GenericArguments.integer(Text.of("x1"))),
+                        GenericArguments.optional(GenericArguments.integer(Text.of("z1"))),
+                        GenericArguments.optional(GenericArguments.integer(Text.of("x2"))),
+                        GenericArguments.optional(GenericArguments.integer(Text.of("z2")))
                 ).executor(new Create())
                 .build();
     }
