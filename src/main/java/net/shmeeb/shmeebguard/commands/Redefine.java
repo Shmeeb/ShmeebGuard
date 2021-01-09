@@ -4,6 +4,7 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.regions.Region;
 import net.shmeeb.shmeebguard.ShmeebGuard;
 import net.shmeeb.shmeebguard.objects.FlagTypes;
+import net.shmeeb.shmeebguard.objects.NameArgument;
 import net.shmeeb.shmeebguard.utils.Utils;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -82,7 +83,7 @@ public class Redefine implements CommandExecutor {
     static CommandSpec build() {
         return CommandSpec.builder()
                 .arguments(
-                        GenericArguments.string(Text.of("name"))
+                        new NameArgument(Text.of("name"))
                 ).executor(new Redefine())
                 .build();
     }
