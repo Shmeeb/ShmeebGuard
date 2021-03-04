@@ -23,7 +23,7 @@ public class Create implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args)  {
         String name = args.<String>getOne(Text.of("name")).get();
-        Optional<String> world = args.<String>getOne(Text.of("world"));
+        Optional<String> world = args.getOne(Text.of("world"));
         Optional<Integer> x1 = args.getOne(Text.of("x1"));
         Optional<Integer> z1 = args.getOne(Text.of("z1"));
         Optional<Integer> x2 = args.getOne(Text.of("x2"));
@@ -91,7 +91,7 @@ public class Create implements CommandExecutor {
             }
         }
 
-        net.shmeeb.shmeebguard.objects.Region region = new net.shmeeb.shmeebguard.objects.Region(name, box, world.get(), null);
+        net.shmeeb.shmeebguard.objects.Region region = new net.shmeeb.shmeebguard.objects.Region(name, box, world.get(), null, null);
         ShmeebGuard.getRegionManager().createRegion(region);
         src.sendMessage(Utils.getText("&aSuccessfully created region: ").concat(region.toText()));
 

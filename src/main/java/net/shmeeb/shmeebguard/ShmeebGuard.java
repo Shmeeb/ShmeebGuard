@@ -2,10 +2,7 @@ package net.shmeeb.shmeebguard;
 
 import com.google.inject.Inject;
 import net.shmeeb.shmeebguard.commands.Base;
-import net.shmeeb.shmeebguard.listeners.BlockChangeListener;
-import net.shmeeb.shmeebguard.listeners.DamageListener;
-import net.shmeeb.shmeebguard.listeners.InteractEntityListener;
-import net.shmeeb.shmeebguard.listeners.SpawnEntityListener;
+import net.shmeeb.shmeebguard.listeners.*;
 import net.shmeeb.shmeebguard.managers.RegionManager;
 import net.shmeeb.shmeebguard.objects.Region;
 import ninja.leaping.configurate.ConfigurationNode;
@@ -22,6 +19,7 @@ import org.spongepowered.api.event.*;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
+import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.entity.SpawnEntityEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Dependency;
@@ -97,6 +95,7 @@ public class ShmeebGuard {
     private void registerEventListeners() {
         registerListener(ChangeBlockEvent.class, Order.LATE, new BlockChangeListener());
         registerListener(SpawnEntityEvent.class, Order.LATE, new SpawnEntityListener());
+        registerListener(MoveEntityEvent.Teleport.class, Order.LATE, new TeleportListener());
         registerListener(InteractEntityEvent.class, Order.LATE, new InteractEntityListener());
         registerListener(DamageEntityEvent.class, Order.EARLY, new DamageListener());
     }

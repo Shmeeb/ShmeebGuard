@@ -48,8 +48,18 @@ public class RegionManager {
                 ShmeebGuard.getInstance().getLogger().error("Couldn't find any flag types for the region " + name);
             }
 
+            HashMap<FlagTypes, String> customFlagValues = new HashMap<>();
+
+            if (!entry.getValue().getNode("customFlagValues").isVirtual()) {
+
+                for (Map.Entry<Object, ? extends ConfigurationNode> customFlagEntry : entry.getValue().getNode("customFlagValues").getChildrenMap().entrySet()) {
+                    customFlagValues.put(FlagTypes.valueOf(customFlagEntry.getKey().toString()), customFlagEntry.getValue().getString("none"));
+                }
+
+            }
+
             List<Region> current = regionsMap.getOrDefault(world, new ArrayList<>());
-            current.add(new Region(name, box, world, types));
+            current.add(new Region(name, box, world, types, customFlagValues.isEmpty() ? null : customFlagValues));
 
             regionsMap.put(world, current);
             count++;

@@ -9,6 +9,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.AABB;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,13 +18,16 @@ public class Region {
     private final AABB box;
     private final String worldName;
     private List<FlagTypes> flagTypes;
+    private HashMap<FlagTypes, String> customFlagValues;
 
-    public Region(String name, AABB box, String worldName, List<FlagTypes> flagTypes) {
+    public Region(String name, AABB box, String worldName, List<FlagTypes> flagTypes, HashMap<FlagTypes, String> customFlagValues) {
         this.name = name;
         this.box = box;
         this.worldName = worldName;
         this.flagTypes = flagTypes == null ? new ArrayList<>() : flagTypes;
+        this.customFlagValues = customFlagValues == null ? new HashMap<>() : customFlagValues;
     }
+
     public String getName() {
         return name;
     }
@@ -40,27 +44,53 @@ public class Region {
         return flagTypes;
     }
 
-    public void updateFlagTypes(List<FlagTypes> flagTypes) {
-        this.flagTypes = flagTypes;
+    public HashMap<FlagTypes, String> getCustomFlagValues() {
+        return customFlagValues;
+    }
+
+    public void saveFlags() {
         List<String> stringFlagTypes = flagTypes.stream().map(Enum::name).collect(Collectors.toList());
 
         ConfigurationNode data_root = ShmeebGuard.getData();
         data_root.getNode("regions", name, "flagTypes").setValue(stringFlagTypes);
+
+        if (customFlagValues.size() > 0) {
+            customFlagValues.forEach((flag, value) -> {
+                data_root.getNode("regions", name, "customFlagValues", flag.name()).setValue(value);
+            });
+        }
+
         ShmeebGuard.setData(data_root);
     }
 
-    public Text toText() {
+    public Text flagsToText() {
         Text hover = Text.of(TextColors.YELLOW, "Current flags for ", name, Text.NEW_LINE);
 
         for (int i = 0; i < FlagTypes.values().length; i++) {
-            Text current_line = flagTypes.contains(FlagTypes.values()[i]) ? Text.of(TextColors.RED, "DENY") : Text.of(TextColors.GREEN, "ALLOW");
-            Text new_line = i == FlagTypes.values().length - 1 ? Text.EMPTY : Text.NEW_LINE;
+            FlagTypes type = FlagTypes.values()[i];
+            Text current_line;
 
-            hover = hover.concat(Text.of(TextColors.GRAY, FlagTypes.values()[i].name(), ": ", current_line, new_line));
+            if (flagTypes.contains(type)) {
+
+                if (type.equals(FlagTypes.TELEPORT_IN))
+                    current_line = Utils.getText("&aALLOW&7 for &b" + getCustomFlagValues().get(FlagTypes.TELEPORT_IN));
+                else
+                    current_line = Text.of(TextColors.RED, "DENY");
+
+            } else {
+                current_line = Text.of(TextColors.GREEN, "ALLOW");
+            }
+
+            Text new_line = i == FlagTypes.values().length - 1 ? Text.EMPTY : Text.NEW_LINE;
+            hover = hover.concat(Text.of(TextColors.GRAY, type.name(), ": ", current_line, new_line));
         }
 
+        return hover;
+    }
+
+    public Text toText() {
         Text flags = Utils.getText(" &d[flags]").toBuilder()
-                .onHover(TextActions.showText(hover))
+                .onHover(TextActions.showText(flagsToText()))
                 .onClick(TextActions.suggestCommand("/sg edit " + name + " "))
                 .build();
 

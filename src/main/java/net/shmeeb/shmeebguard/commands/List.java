@@ -19,6 +19,8 @@ public class List implements CommandExecutor {
             return CommandResult.success();
         }
 
+        //todo: sponge pagination, alphabetical sorting
+
         regions.forEach(region -> src.sendMessage(region.toText()));
 
         return CommandResult.success();

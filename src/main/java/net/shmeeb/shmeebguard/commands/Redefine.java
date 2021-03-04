@@ -9,13 +9,13 @@ import net.shmeeb.shmeebguard.utils.Utils;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.AABB;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,9 +70,10 @@ public class Redefine implements CommandExecutor {
         }
 
         List<FlagTypes> flagTypes = region.get().getFlagTypes();
+        HashMap<FlagTypes, String> customFlagValues = region.get().getCustomFlagValues();
 
         ShmeebGuard.getRegionManager().deleteRegion(name);
-        net.shmeeb.shmeebguard.objects.Region newRegion = new net.shmeeb.shmeebguard.objects.Region(name, box, player.getWorld().getName(), flagTypes);
+        net.shmeeb.shmeebguard.objects.Region newRegion = new net.shmeeb.shmeebguard.objects.Region(name, box, player.getWorld().getName(), flagTypes, customFlagValues);
         ShmeebGuard.getRegionManager().createRegion(newRegion);
 
         player.sendMessage(Utils.getText("&aSuccessfully redefined region. ").concat(region.get().toText()));
