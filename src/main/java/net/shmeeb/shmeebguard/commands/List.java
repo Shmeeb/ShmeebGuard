@@ -8,6 +8,14 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.service.pagination.PaginationList;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class List implements CommandExecutor {
     @Override
@@ -19,9 +27,13 @@ public class List implements CommandExecutor {
             return CommandResult.success();
         }
 
-        //todo: sponge pagination, alphabetical sorting
+        Collections.sort(regions, Comparator.comparing(Region::getName));
 
-        regions.forEach(region -> src.sendMessage(region.toText()));
+        PaginationList.builder().title(Text.builder().build())
+                .contents(regions.stream().map(r -> r.toText()).collect(Collectors.toList()))
+                .padding(Text.of(TextStyles.RESET, TextColors.DARK_GRAY, TextStyles.STRIKETHROUGH, "-"))
+                .title(Text.of(TextColors.GREEN, " ShmeebGuard Regions ", TextStyles.ITALIC))
+                .sendTo(src);
 
         return CommandResult.success();
     }
