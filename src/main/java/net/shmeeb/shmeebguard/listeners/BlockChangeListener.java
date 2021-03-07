@@ -49,9 +49,14 @@ public class BlockChangeListener implements EventListener<ChangeBlockEvent> {
                     event.setCancelled(true);
                     return;
                 } else if (event instanceof ChangeBlockEvent.Post) {
-
                     if (ice.contains(event.getTransactions().get(0).getOriginal().getState().getType())
                             && event.getTransactions().get(0).getFinal().getState().getType().equals(BlockTypes.WATER)) {
+                        event.setCancelled(true);
+                        return;
+                    }
+
+                    if (ice.contains(event.getTransactions().get(0).getFinal().getState().getType())
+                            && event.getTransactions().get(0).getOriginal().getState().getType().equals(BlockTypes.WATER)) {
                         event.setCancelled(true);
                         return;
                     }
