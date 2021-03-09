@@ -48,25 +48,29 @@ public class Create implements CommandExecutor {
                         z2.get()
                 );
             } else if (src instanceof Player) {
-                Player player = (Player) src;
-                world = Optional.of(player.getWorld().getName());
-
-                try {
-                    selection = WorldEdit.getInstance().getSession(player.getName()).getWorldSelection();
-                } catch (Exception e) {
-                    src.sendMessage(Utils.getText("&cPlease select a cuboid region with the WorldEdit wand"));
+                if (world.isPresent() || x1.isPresent() || z1.isPresent() || x2.isPresent() || z2.isPresent()) {
+                    src.sendMessage(Utils.getText("&cWhen specifying coordinates, use the format: /sg create <name> <world> <x1> <z1> <x2> <z2>"));
                     return CommandResult.success();
+                } else {
+                    Player player = (Player) src;
+                    world = Optional.of(player.getWorld().getName());
+                    try {
+                        selection = WorldEdit.getInstance().getSession(player.getName()).getWorldSelection();
+                    } catch (Exception e) {
+                        src.sendMessage(Utils.getText("&cPlease select a cuboid region with the WorldEdit wand"));
+                        return CommandResult.success();
+                    }
+
+                    box = new AABB(
+                            selection.getMinimumPoint().getBlockX(),
+                            selection.getMinimumPoint().getBlockY(),
+                            selection.getMinimumPoint().getBlockZ(),
+
+                            selection.getMaximumPoint().getBlockX(),
+                            selection.getMaximumPoint().getBlockY(),
+                            selection.getMaximumPoint().getBlockZ()
+                    );
                 }
-
-                box = new AABB(
-                        selection.getMinimumPoint().getBlockX(),
-                        selection.getMinimumPoint().getBlockY(),
-                        selection.getMinimumPoint().getBlockZ(),
-
-                        selection.getMaximumPoint().getBlockX(),
-                        selection.getMaximumPoint().getBlockY(),
-                        selection.getMaximumPoint().getBlockZ()
-                );
             } else {
                 src.sendMessage(Utils.getText("&cEither select a region with WorldEdit or specify the location like so: /sg create <name> <world> <x1> <z1> <x2> <z2>"));
                 return CommandResult.success();
