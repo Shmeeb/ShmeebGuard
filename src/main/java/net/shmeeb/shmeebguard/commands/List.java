@@ -30,7 +30,7 @@ public class List implements CommandExecutor {
         Collections.sort(regions, Comparator.comparing(Region::getName));
 
         PaginationList.builder().title(Text.builder().build())
-                .contents(regions.stream().map(r -> r.toText()).collect(Collectors.toList()))
+                .contents(regions.stream().map(Region::toText).collect(Collectors.toList()))
                 .padding(Text.of(TextStyles.RESET, TextColors.DARK_GRAY, TextStyles.STRIKETHROUGH, "-"))
                 .title(Text.of(TextColors.GREEN, " ShmeebGuard Regions ", TextStyles.ITALIC))
                 .sendTo(src);

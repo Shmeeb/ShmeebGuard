@@ -3,14 +3,13 @@ package net.shmeeb.shmeebguard.objects;
 import net.shmeeb.shmeebguard.ShmeebGuard;
 import net.shmeeb.shmeebguard.utils.Utils;
 import ninja.leaping.configurate.ConfigurationNode;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.AABB;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Region {
@@ -58,6 +57,8 @@ public class Region {
             customFlagValues.forEach((flag, value) -> {
                 data_root.getNode("regions", name, "customFlagValues", flag.name()).setValue(value);
             });
+
+            customFlagValues.values().remove(null);
         }
 
         ShmeebGuard.setData(data_root);
@@ -76,7 +77,6 @@ public class Region {
                     Text hover = Text.of(TextColors.GREEN, type.name() + " settings for ", name, Text.NEW_LINE);
                     List<String> customFlags = new ArrayList<>(Utils.stringToList(getCustomFlagValues().get(type)));
 
-
                     for (int j = 0; j < customFlags.size(); j++) {
                         Text new_line = j == customFlags.size() - 1 ? Text.EMPTY : Text.NEW_LINE;
 
@@ -86,7 +86,7 @@ public class Region {
                     current_line = Text.builder()
                             .append(Text.of(TextColors.GOLD, "[x" + Utils.stringToList(getCustomFlagValues().get(type)).size() + "]"))
                             .onHover(TextActions.showText(hover))
-                            .onClick(TextActions.suggestCommand("sg edit " + name + " " + type + " "))
+                            .onClick(TextActions.suggestCommand("/sg edit " + name + " " + type + " "))
                             .build();
 
 //                    current_line = Text.of(TextColors.GOLD, "[x" + Utils.stringToList(getCustomFlagValues().get(type)).size() + "]");
@@ -100,10 +100,31 @@ public class Region {
                     if (type.equals(FlagTypes.TELEPORT_IN))
                         current_line = Utils.getText("&aALLOW&7 for &b" + getCustomFlagValues().get(FlagTypes.TELEPORT_IN));
                     else
-                        current_line = Text.of(TextColors.RED, "DENY");
+                        current_line = Text.builder().append(Text.of(TextColors.RED, "DENY"))
+                                .onClick(TextActions.executeCallback(cb -> {
+                                    Sponge.getCommandManager().process(cb.getCommandSource().get(),
+                                            "sg edit " + name + " " + type.name() + " allow");
+
+                                    Sponge.getCommandManager().process(cb.getCommandSource().get(),
+                                            "sg edit " + name);
+                                })).onHover(TextActions.showText(Utils.getText("&aClick to set flag to &a&l&nALLOW")))
+                                .build();
 
                 } else {
-                    current_line = Text.of(TextColors.GREEN, "ALLOW");
+                    if (type.equals(FlagTypes.TELEPORT_IN))
+                        current_line = Text.builder().append(Text.of(TextColors.GREEN, "ALLOW"))
+                                .onClick(TextActions.suggestCommand("/sg edit " + name + " " + type.name() + " allow "))
+                                .build();
+                    else
+                        current_line = Text.builder().append(Text.of(TextColors.GREEN, "ALLOW"))
+                            .onClick(TextActions.executeCallback(cb -> {
+                                Sponge.getCommandManager().process(cb.getCommandSource().get(),
+                                        "sg edit " + name + " " + type.name() + " deny");
+
+                                Sponge.getCommandManager().process(cb.getCommandSource().get(),
+                                        "sg edit " + name);
+                            })).onHover(TextActions.showText(Utils.getText("&aClick to set flag to &c&l&nDENY")))
+                            .build();
                 }
             }
 
