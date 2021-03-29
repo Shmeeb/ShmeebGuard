@@ -7,7 +7,7 @@
 
 ## Flags
 ### Flag Types
-> All of the following flag values are either ALLOW (default) or DENY
+> All of the following flag values may either be ALLOW (default) or DENY
 * BLOCK_CHANGE
 * SPAWN_POKEMON
 * INTERACT_ENTITY_SECONDARY
