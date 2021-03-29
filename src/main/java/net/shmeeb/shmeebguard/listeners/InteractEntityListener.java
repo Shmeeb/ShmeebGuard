@@ -4,6 +4,7 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import net.shmeeb.shmeebguard.ShmeebGuard;
 import net.shmeeb.shmeebguard.objects.FlagTypes;
 import net.shmeeb.shmeebguard.objects.Region;
+import net.shmeeb.shmeebguard.utils.Utils;
 import org.spongepowered.api.event.EventListener;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
 
@@ -15,6 +16,12 @@ public class InteractEntityListener implements EventListener<InteractEntityEvent
     @Override
     public void handle(InteractEntityEvent event) {
         if (event.isCancelled()) return;
+
+        if (!Utils.isLocationInWorldBorder(event.getTargetEntity().getLocation().getPosition(), event.getTargetEntity().getWorld())) {
+            event.setCancelled(true);
+            return;
+        }
+
         Optional<List<Region>> regions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(event.getTargetEntity().getLocation());
         if (!regions.isPresent()) return;
 

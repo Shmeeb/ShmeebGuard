@@ -64,28 +64,54 @@ public class Region {
     }
 
     public Text flagsToText() {
-        Text hover = Text.of(TextColors.YELLOW, "Current flags for ", name, Text.NEW_LINE);
+        Text text = Text.of(TextColors.YELLOW, "Current flags for ", name, Text.NEW_LINE);
 
         for (int i = 0; i < FlagTypes.values().length; i++) {
             FlagTypes type = FlagTypes.values()[i];
             Text current_line;
 
-            if (flagTypes.contains(type)) {
+            if (type.equals(FlagTypes.ENTER_COMMANDS) || type.equals(FlagTypes.EXIT_COMMANDS)) {
 
-                if (type.equals(FlagTypes.TELEPORT_IN))
-                    current_line = Utils.getText("&aALLOW&7 for &b" + getCustomFlagValues().get(FlagTypes.TELEPORT_IN));
-                else
-                    current_line = Text.of(TextColors.RED, "DENY");
+                if (getCustomFlagValues().containsKey(type)) {
+                    Text hover = Text.of(TextColors.GREEN, type.name() + " settings for ", name, Text.NEW_LINE);
+                    List<String> customFlags = new ArrayList<>(Utils.stringToList(getCustomFlagValues().get(type)));
+
+
+                    for (int j = 0; j < customFlags.size(); j++) {
+                        Text new_line = j == customFlags.size() - 1 ? Text.EMPTY : Text.NEW_LINE;
+
+                        hover = hover.concat(Text.of(TextColors.GRAY, (j + 1), ") ", customFlags.get(j), new_line));
+                    }
+
+                    current_line = Text.builder()
+                            .append(Text.of(TextColors.GOLD, "[x" + Utils.stringToList(getCustomFlagValues().get(type)).size() + "]"))
+                            .onHover(TextActions.showText(hover))
+                            .onClick(TextActions.suggestCommand("sg edit " + name + " " + type + " "))
+                            .build();
+
+//                    current_line = Text.of(TextColors.GOLD, "[x" + Utils.stringToList(getCustomFlagValues().get(type)).size() + "]");
+                } else {
+                    current_line = Text.of(TextColors.RED, "NONE");
+                }
 
             } else {
-                current_line = Text.of(TextColors.GREEN, "ALLOW");
+                if (flagTypes.contains(type)) {
+
+                    if (type.equals(FlagTypes.TELEPORT_IN))
+                        current_line = Utils.getText("&aALLOW&7 for &b" + getCustomFlagValues().get(FlagTypes.TELEPORT_IN));
+                    else
+                        current_line = Text.of(TextColors.RED, "DENY");
+
+                } else {
+                    current_line = Text.of(TextColors.GREEN, "ALLOW");
+                }
             }
 
             Text new_line = i == FlagTypes.values().length - 1 ? Text.EMPTY : Text.NEW_LINE;
-            hover = hover.concat(Text.of(TextColors.GRAY, type.name(), ": ", current_line, new_line));
+            text = text.concat(Text.of(TextColors.GRAY, type.name(), ": ", current_line, new_line));
         }
 
-        return hover;
+        return text;
     }
 
     public Text toText() {
