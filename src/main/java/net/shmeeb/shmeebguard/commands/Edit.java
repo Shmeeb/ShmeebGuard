@@ -174,15 +174,18 @@ public class Edit implements CommandExecutor {
                 try {
                     int index = Integer.parseInt(target.get());
 
-                    if (index <= 0 || commands.size() + 1 < index) {
-                        src.sendMessage(Utils.getText("&cInvalid index provided (must range between 1 and " + (commands.size() + 1) + ")"));
+                    if (index <= 0 || commands.size() < index) {
+                        src.sendMessage(Utils.getText("&cInvalid index provided (must range between 1 and " + (commands.size()) + ")"));
                         return CommandResult.success();
                     }
 
-                    commands.remove(index);
+                    commands.remove(index - 1);
 
                     if (commands.isEmpty()) {
                         region.get().getFlagTypes().remove(flagType.get());
+                        region.get().getCustomFlagValues().put(flagType.get(), null);
+                    } else {
+                        region.get().getCustomFlagValues().put(flagType.get(), Utils.listToString(commands));
                     }
 
                     src.sendMessage(Utils.getText("&aSuccessfully updated the " + flagType.get().name() + " flag!"));
