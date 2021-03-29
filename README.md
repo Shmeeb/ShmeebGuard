@@ -18,6 +18,7 @@
 * DECAY - prevents leaves from decaying and ice from melting
 
 ## Special Flags
+> Note that these flags will only be triggered when a user teleports, and not when they simply walk into a region
 * TELEPORT_IN - users must have the permission node specified in order to warp into a region with this flag defined, otherwise they will be teleported to spawn
   * Set the permssion node: `/sg edit [region name] TELEPORT_IN allow [permission node]`
   * Clear the flag: `/sg edit [region name] TELEPORT_IN allow`
