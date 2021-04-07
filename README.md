@@ -1,6 +1,6 @@
 # ShmeebGuard
 
-##Notes
+## Notes
 * As advanced GriefPrevention users will know, the plugin doesn't work perfect 100% of the time, and in the cases where 100% reliability is required, this plugin shines.
 * This plugin is designed with reliability as a top priority, so I decided to sacrifice some usability for reliability by forgoing any permission/bypass checks.
 
