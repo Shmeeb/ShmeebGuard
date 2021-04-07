@@ -1,9 +1,14 @@
 # ShmeebGuard
 
+##Notes
+* As advanced GriefPrevention users will know, the plugin doesn't work perfect 100% of the time, and in the cases where 100% reliability is required, this plugin shines.
+* This plugin is designed with reliability as a top priority, so I decided to sacrifice some usability for reliability by forgoing any permission/bypass checks.
+
 ## Commands
 * Create a region by selecting a cuboid region with WorldEdit and running `/sg create [region name]`
 * View a summary of a region's flags with `/sg edit [region name]`
 * View all regions at your current location with `/sg here`
+* Redefine a region's boundaries by selecting a cuboid region with WorldEdit selection and running `/sg redefine [region name]`
 
 ## Flags
 ### Flag Types
