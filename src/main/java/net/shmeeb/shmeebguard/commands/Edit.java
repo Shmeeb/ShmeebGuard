@@ -138,15 +138,6 @@ public class Edit implements CommandExecutor {
                 return CommandResult.success();
             }
 
-//            if (!target.isPresent()) {
-//                src.sendMessage(Utils.getText("&cCorrect usage:"));
-//                src.sendMessage(Utils.getText("&cCorrect usage: /sg edit " + region.get().getName() + " " + flagType.get().name() + " add <command>"));
-//                src.sendMessage(Utils.getText("&cCorrect usage: /sg edit " + region.get().getName() + " " + flagType.get().name() + " remove <index>"));
-//                src.sendMessage(Utils.getText("&cCorrect usage: /sg edit " + region.get().getName() + " " + flagType.get().name() + " list"));
-//
-//                return CommandResult.success();
-//            }
-
             if (flagValue.get().equals("add")) {
                 String command = target.get();
 

@@ -4,12 +4,10 @@ import com.google.inject.Inject;
 import net.shmeeb.shmeebguard.commands.Base;
 import net.shmeeb.shmeebguard.listeners.*;
 import net.shmeeb.shmeebguard.managers.RegionManager;
-import net.shmeeb.shmeebguard.objects.Region;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Sponge;
@@ -22,15 +20,12 @@ import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.entity.SpawnEntityEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 @Plugin(id = "shmeebguard",
         name = "ShmeebGuard",
@@ -42,7 +37,7 @@ public class ShmeebGuard {
     private static ShmeebGuard instance;
     private static RegionManager regionManager;
     @Inject private EventManager eventManager;
-    private Logger logger = LoggerFactory.getLogger("shmeeb.guard");
+    private Logger logger = LoggerFactory.getLogger("ShmeebGuard");
 
     @Inject @DefaultConfig(sharedRoot = false)
     private ConfigurationLoader<CommentedConfigurationNode> config_loader;

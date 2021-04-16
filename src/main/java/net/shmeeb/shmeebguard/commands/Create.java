@@ -4,6 +4,7 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.regions.Region;
 import net.shmeeb.shmeebguard.ShmeebGuard;
 import net.shmeeb.shmeebguard.utils.Utils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -33,6 +34,11 @@ public class Create implements CommandExecutor {
 
         if (ShmeebGuard.getRegionManager().getRegion(name).isPresent()) {
             src.sendMessage(Utils.getText("&cA region with that name already exists"));
+            return CommandResult.success();
+        }
+
+        if (world.isPresent() && !Sponge.getServer().getWorld(world.get()).isPresent()) {
+            src.sendMessage(Utils.getText("&cInvalid world name provided"));
             return CommandResult.success();
         }
 
