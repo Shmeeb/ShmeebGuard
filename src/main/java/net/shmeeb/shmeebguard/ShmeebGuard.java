@@ -20,6 +20,7 @@ import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.entity.SpawnEntityEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.plugin.Plugin;
 
 import java.io.File;
@@ -92,6 +93,7 @@ public class ShmeebGuard {
         registerListener(SpawnEntityEvent.class, Order.LATE, new SpawnEntityListener());
         registerListener(MoveEntityEvent.Teleport.class, Order.LATE, new TeleportListener());
         registerListener(InteractEntityEvent.class, Order.LATE, new InteractEntityListener());
+        registerListener(DropItemEvent.Dispense.Pre.class, Order.LATE, new DropListener());
         registerListener(DamageEntityEvent.class, Order.EARLY, new DamageListener());
     }
 

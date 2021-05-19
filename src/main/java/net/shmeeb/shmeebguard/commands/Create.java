@@ -103,7 +103,9 @@ public class Create implements CommandExecutor {
 
         net.shmeeb.shmeebguard.objects.Region region = new net.shmeeb.shmeebguard.objects.Region(name, box, world.get(), null, null);
         ShmeebGuard.getRegionManager().createRegion(region);
-        src.sendMessage(Utils.getText("&aSuccessfully created region: ").concat(region.toText()));
+
+        src.sendMessage(Utils.getText("&aSuccessfully created region!"));
+        src.sendMessage(region.toText());
 
         return CommandResult.success();
     }
