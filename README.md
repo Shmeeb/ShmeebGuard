@@ -21,6 +21,7 @@
 * INTERACT_POKEMON
 * DROP_ITEMS - prevents any ItemStack entities from being spawned
 * DECAY - prevents leaves from decaying and ice from melting
+* ALLOW_NATURAL_SPAWNS - prevents Pokemon from spawning through natural means, although Pixelmon Spawners still work
 
 ## Special Flags
 > Note that these flags will only be triggered when a user teleports, and not when they simply walk into a region
