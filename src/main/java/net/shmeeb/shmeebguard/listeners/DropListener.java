@@ -6,6 +6,7 @@ import net.shmeeb.shmeebguard.utils.Utils;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.EventListener;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
+import org.spongepowered.api.plugin.PluginContainer;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,8 @@ public class DropListener implements EventListener<DropItemEvent.Dispense.Pre> {
         if (e.isCancelled() || e.getOriginalDroppedItems().isEmpty() || !e.getCause().first(Player.class).isPresent()) return;
         Player player = e.getCause().first(Player.class).get();
         if (player.hasPermission("group.regular")) return;
+
+        if (e.getCause().first(PluginContainer.class).isPresent() && e.getCause().first(PluginContainer.class).get().getName().equalsIgnoreCase("Minecraft")) return;
 
         Optional<List<Region>> regions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(player.getLocation());
         if (!regions.isPresent()) return;
