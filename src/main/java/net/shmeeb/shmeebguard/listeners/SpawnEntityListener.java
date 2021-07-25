@@ -3,6 +3,7 @@ package net.shmeeb.shmeebguard.listeners;
 import com.pixelmonmod.pixelmon.blocks.spawning.TileEntityPixelmonSpawner;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pokeballs.EntityOccupiedPokeball;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.shmeeb.shmeebguard.ShmeebGuard;
 import net.shmeeb.shmeebguard.objects.FlagTypes;
 import net.shmeeb.shmeebguard.objects.Region;
@@ -36,7 +37,9 @@ public class SpawnEntityListener implements EventListener<SpawnEntityEvent> {
 
                 if (region.getFlagTypes().contains(FlagTypes.ALLOW_NATURAL_SPAWNS)) {
 
-                    if (event.getCause().containsType(TileEntityPixelmonSpawner.class) || event.getCause().containsType(EntityOccupiedPokeball.class)) return;
+                    if (event.getCause().containsType(TileEntityPixelmonSpawner.class)
+                        || event.getCause().containsType(EntityOccupiedPokeball.class)
+                        || event.getCause().containsType(EntityPlayerMP.class)) return;
 
                     event.setCancelled(true);
                     return;
