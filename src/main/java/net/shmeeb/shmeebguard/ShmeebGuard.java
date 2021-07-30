@@ -1,6 +1,7 @@
 package net.shmeeb.shmeebguard;
 
 import com.google.inject.Inject;
+import com.pixelmonmod.pixelmon.Pixelmon;
 import net.shmeeb.shmeebguard.commands.Base;
 import net.shmeeb.shmeebguard.listeners.*;
 import net.shmeeb.shmeebguard.managers.RegionManager;
@@ -95,6 +96,7 @@ public class ShmeebGuard {
         registerListener(InteractEntityEvent.class, Order.LATE, new InteractEntityListener());
         registerListener(DropItemEvent.Dispense.Pre.class, Order.LATE, new DropListener());
         registerListener(DamageEntityEvent.class, Order.EARLY, new DamageListener());
+        Pixelmon.EVENT_BUS.register(new SpawnEntityListener());
     }
 
     public <T extends Event> void registerListener(Class<T> eventClass, Order order, EventListener<? super T> listener) {

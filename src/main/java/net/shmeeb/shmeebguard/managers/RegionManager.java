@@ -6,7 +6,6 @@ import net.shmeeb.shmeebguard.ShmeebGuard;
 import net.shmeeb.shmeebguard.objects.FlagTypes;
 import net.shmeeb.shmeebguard.objects.Region;
 import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.util.AABB;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -41,8 +40,13 @@ public class RegionManager {
 
             try {
                 types = entry.getValue().getNode("flagTypes").getList(TypeToken.of(String.class))
-                        .stream().map(FlagTypes::valueOf).collect(Collectors.toList());
-            } catch (ObjectMappingException ignored) {}
+                    .stream()
+                    .filter(flag -> FlagTypes.enumValues.contains(flag))
+                    .map(FlagTypes::valueOf)
+                    .collect(Collectors.toList());
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
 
             if (types == null) {
                 ShmeebGuard.getInstance().getLogger().error("Couldn't find any flag types for the region " + name);
