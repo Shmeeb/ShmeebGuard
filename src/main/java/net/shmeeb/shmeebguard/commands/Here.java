@@ -11,20 +11,19 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.List;
-import java.util.Optional;
 
 public class Here implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args)  {
         Player player = (Player) src;
-        Optional<List<Region>> regions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(player.getLocation());
+        List<Region> regions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(player.getLocation());
 
-        if (!regions.isPresent()) {
+        if (regions.isEmpty()) {
             player.sendMessage(Utils.getText("&cNo regions found"));
             return CommandResult.success();
         }
 
-        for (Region region : regions.get()) {
+        for (Region region : regions) {
             player.sendMessage(region.toText());
         }
 

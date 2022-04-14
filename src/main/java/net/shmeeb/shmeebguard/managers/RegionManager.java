@@ -1,6 +1,7 @@
 package net.shmeeb.shmeebguard.managers;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
 import net.shmeeb.shmeebguard.ShmeebGuard;
 import net.shmeeb.shmeebguard.objects.FlagTypes;
@@ -82,8 +83,8 @@ public class RegionManager {
         return Optional.empty();
     }
 
-    public Optional<List<Region>> getAllRegionsAtPosition(Location<World> location) {
-        if (!regionsMap.containsKey(location.getExtent().getName())) return Optional.empty();
+    public List<Region> getAllRegionsAtPosition(Location<World> location) {
+        if (!regionsMap.containsKey(location.getExtent().getName())) return Lists.newArrayList();
         List<Region> options = new ArrayList<>();
         Vector3d pos =  location.getPosition();
 
@@ -91,7 +92,7 @@ public class RegionManager {
             if (region.getBox().contains(pos)) options.add(region);
         }
 
-        return options.isEmpty() ? Optional.empty() : Optional.of(options);
+        return options;
     }
 
 //    public Optional<Region> getRegionAtPosition(Location<World> location) {

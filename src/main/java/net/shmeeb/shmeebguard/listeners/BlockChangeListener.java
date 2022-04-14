@@ -14,7 +14,6 @@ import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.EventListener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.world.ExplosionEvent;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -38,10 +37,8 @@ public class BlockChangeListener implements EventListener<ChangeBlockEvent> {
 
         Optional<Location<World>> location = Utils.getLocation(event.getTransactions().get(0));
         if (!location.isPresent()) return;
-        Optional<List<Region>> regions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(location.get());
-        if (!regions.isPresent()) return;
 
-        for (Region region : regions.get()) {
+        for (Region region : ShmeebGuard.getRegionManager().getAllRegionsAtPosition(location.get())) {
 
             if (region.getFlagTypes().contains(FlagTypes.DECAY)) {
 

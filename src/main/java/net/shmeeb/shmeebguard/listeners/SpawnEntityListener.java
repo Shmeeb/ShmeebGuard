@@ -4,6 +4,7 @@ import com.pixelmonmod.pixelmon.api.events.spawning.SpawnEvent;
 import com.pixelmonmod.pixelmon.api.spawning.archetypes.entities.pokemon.SpawnActionPokemon;
 import com.pixelmonmod.pixelmon.api.world.MutableLocation;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.shmeeb.shmeebguard.ShmeebGuard;
 import net.shmeeb.shmeebguard.objects.FlagTypes;
@@ -15,9 +16,6 @@ import org.spongepowered.api.event.entity.SpawnEntityEvent;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import java.util.List;
-import java.util.Optional;
-
 public class SpawnEntityListener implements EventListener<SpawnEntityEvent> {
 
     @SubscribeEvent
@@ -26,10 +24,8 @@ public class SpawnEntityListener implements EventListener<SpawnEntityEvent> {
 
         MutableLocation spawnLocation = event.action.spawnLocation.location;
         Location<World> spongeLocation = new Location<>((World) spawnLocation.world, spawnLocation.pos.getX(), spawnLocation.pos.getY(), spawnLocation.pos.getZ());
-        Optional<List<Region>> regions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(spongeLocation);
-        if (!regions.isPresent()) return;
 
-        for (Region region : regions.get()) {
+        for (Region region : ShmeebGuard.getRegionManager().getAllRegionsAtPosition(spongeLocation)) {
             if (!region.getFlagTypes().contains(FlagTypes.ALLOW_NATURAL_SPAWNS)) continue;
             event.setCanceled(true);
             return;
@@ -42,10 +38,7 @@ public class SpawnEntityListener implements EventListener<SpawnEntityEvent> {
         if (event.getEntities().isEmpty()) return;
         Entity entity = event.getEntities().get(0);
 
-        Optional<List<Region>> regions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(entity.getLocation());
-        if (!regions.isPresent()) return;
-
-        for (Region region : regions.get()) {
+        for (Region region : ShmeebGuard.getRegionManager().getAllRegionsAtPosition(entity.getLocation())) {
 
             if (entity instanceof EntityPixelmon) {
 

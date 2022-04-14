@@ -8,9 +8,6 @@ import org.spongepowered.api.event.EventListener;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.plugin.PluginContainer;
 
-import java.util.List;
-import java.util.Optional;
-
 public class DropListener implements EventListener<DropItemEvent.Dispense.Pre> {
 
     @Override
@@ -21,10 +18,7 @@ public class DropListener implements EventListener<DropItemEvent.Dispense.Pre> {
 
         if (e.getCause().first(PluginContainer.class).isPresent() && e.getCause().first(PluginContainer.class).get().getName().equalsIgnoreCase("Minecraft")) return;
 
-        Optional<List<Region>> regions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(player.getLocation());
-        if (!regions.isPresent()) return;
-
-        for (Region region : regions.get()) {
+        for (Region region : ShmeebGuard.getRegionManager().getAllRegionsAtPosition(player.getLocation())) {
             if (!region.getName().equalsIgnoreCase("spawn")) continue;
 
             player.sendMessage(Utils.getText("&c&l(!)&c You aren't allowed to drop items here!"));

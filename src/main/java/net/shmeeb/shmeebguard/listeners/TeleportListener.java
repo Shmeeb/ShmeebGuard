@@ -15,7 +15,6 @@ import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class TeleportListener implements EventListener<MoveEntityEvent.Teleport> {
 
@@ -27,14 +26,14 @@ public class TeleportListener implements EventListener<MoveEntityEvent.Teleport>
         Player player = event.getCause().first(Player.class).get();
         Location<World> toLoc = event.getToTransform().getLocation();
         Location<World> fromLoc = event.getFromTransform().getLocation();
-        Optional<List<Region>> toRegions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(toLoc);
-        Optional<List<Region>> fromRegions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(fromLoc);
+        List<Region> toRegions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(toLoc);
+        List<Region> fromRegions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(fromLoc);
         List<String> commands = new ArrayList<>();
 
         try {
-            if (!toRegions.isPresent()) return;
+            if (toRegions.isEmpty()) return;
 
-            for (Region region : toRegions.get()) {
+            for (Region region : toRegions) {
 
                 if (region.getFlagTypes().contains(FlagTypes.TELEPORT_IN)) {
                     String perm = region.getCustomFlagValues().getOrDefault(FlagTypes.TELEPORT_IN, "none");
@@ -75,15 +74,13 @@ public class TeleportListener implements EventListener<MoveEntityEvent.Teleport>
 
         } finally {
 
-            if (fromRegions.isPresent()) {
-                for (Region region : fromRegions.get()) {
-                    if (!region.getFlagTypes().contains(FlagTypes.EXIT_COMMANDS)) continue;
+            for (Region region : fromRegions) {
+                if (!region.getFlagTypes().contains(FlagTypes.EXIT_COMMANDS)) continue;
 
-                    if (region.getCustomFlagValues().containsKey(FlagTypes.EXIT_COMMANDS)) {
-                        commands.addAll(Utils.stringToList(region.getCustomFlagValues().get(FlagTypes.EXIT_COMMANDS)));
-                    }
-
+                if (region.getCustomFlagValues().containsKey(FlagTypes.EXIT_COMMANDS)) {
+                    commands.addAll(Utils.stringToList(region.getCustomFlagValues().get(FlagTypes.EXIT_COMMANDS)));
                 }
+
             }
 
             commands.forEach(cmd -> {

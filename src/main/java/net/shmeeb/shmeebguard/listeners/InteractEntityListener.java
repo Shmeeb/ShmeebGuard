@@ -8,9 +8,6 @@ import net.shmeeb.shmeebguard.utils.Utils;
 import org.spongepowered.api.event.EventListener;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
 
-import java.util.List;
-import java.util.Optional;
-
 public class InteractEntityListener implements EventListener<InteractEntityEvent> {
 
     @Override
@@ -22,10 +19,7 @@ public class InteractEntityListener implements EventListener<InteractEntityEvent
             return;
         }
 
-        Optional<List<Region>> regions = ShmeebGuard.getRegionManager().getAllRegionsAtPosition(event.getTargetEntity().getLocation());
-        if (!regions.isPresent()) return;
-
-        for (Region region : regions.get()) {
+        for (Region region : ShmeebGuard.getRegionManager().getAllRegionsAtPosition(event.getTargetEntity().getLocation())) {
 
             if (event instanceof InteractEntityEvent.Primary) {
 
