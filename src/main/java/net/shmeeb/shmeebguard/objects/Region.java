@@ -95,10 +95,26 @@ public class Region {
                 }
 
             } else {
+
+                //regular: flag in non default state (currently set to DENY, give option to change to ALLOW)
+                //autobutcher: flag in non default state (currently set to ENABLE, give option to change to DISABLE)
+
                 if (flagTypes.contains(type)) {
 
                     if (type.equals(FlagTypes.TELEPORT_IN))
                         current_line = Utils.getText("&aALLOW&7 for &b" + getCustomFlagValues().get(FlagTypes.TELEPORT_IN));
+
+                    else if (type.equals(FlagTypes.AUTO_BUTCHER))
+                        current_line = Text.builder().append(Text.of(TextColors.GREEN, "ALLOW"))
+                            .onClick(TextActions.executeCallback(cb -> {
+                                Sponge.getCommandManager().process(cb.getCommandSource().get(),
+                                    "sg edit " + name + " " + type.name() + " deny");
+
+                                Sponge.getCommandManager().process(cb.getCommandSource().get(),
+                                    "sg edit " + name);
+                            })).onHover(TextActions.showText(Utils.getText("&aClick to set flag to &c&l&nDENY")))
+                            .build();
+
                     else
                         current_line = Text.builder().append(Text.of(TextColors.RED, "DENY"))
                                 .onClick(TextActions.executeCallback(cb -> {
@@ -113,8 +129,21 @@ public class Region {
                 } else {
                     if (type.equals(FlagTypes.TELEPORT_IN))
                         current_line = Text.builder().append(Text.of(TextColors.GREEN, "ALLOW"))
-                                .onClick(TextActions.suggestCommand("/sg edit " + name + " " + type.name() + " allow "))
+                                .onClick(TextActions.suggestCommand("/sg edit " + name + " " + type.name() + " allow"))
                                 .build();
+
+                    else if (type.equals(FlagTypes.AUTO_BUTCHER))
+
+                        current_line = Text.builder().append(Text.of(TextColors.RED, "DENY"))
+                            .onClick(TextActions.executeCallback(cb -> {
+                                Sponge.getCommandManager().process(cb.getCommandSource().get(),
+                                    "sg edit " + name + " " + type.name() + " allow");
+
+                                Sponge.getCommandManager().process(cb.getCommandSource().get(),
+                                    "sg edit " + name);
+                            })).onHover(TextActions.showText(Utils.getText("&aClick to set flag to &a&l&nALLOW")))
+                            .build();
+
                     else
                         current_line = Text.builder().append(Text.of(TextColors.GREEN, "ALLOW"))
                             .onClick(TextActions.executeCallback(cb -> {

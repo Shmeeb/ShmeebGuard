@@ -193,21 +193,62 @@ public class Edit implements CommandExecutor {
             src.sendMessage(Utils.getText("&cInvalid flagValue argument provided (must be add/remove/list)"));
 
         } else if (flagValue.get().equalsIgnoreCase("allow")) {
-            region.get().getFlagTypes().remove(flagType.get());
 
-            region.get().saveFlags();
-            src.sendMessage(Utils.getText("&aSuccessfully set the &6" + flagType.get().name() + "&a flag to &6" + flagValue.get()));
+            if (flagType.get().equals(FlagTypes.AUTO_BUTCHER)) {
+                if (region.get().getFlagTypes().contains(flagType.get())) {
+                    src.sendMessage(Utils.getText("&cThat flag is not defined"));
+                    return CommandResult.success();
+                }
+
+                denyFlag(region.get(), flagType.get());
+            } else {
+
+                if (!region.get().getFlagTypes().contains(flagType.get())) {
+                    src.sendMessage(Utils.getText("&cThat flag is not defined"));
+                    return CommandResult.success();
+                }
+
+                allowFlag(region.get(), flagType.get());
+            }
+
+            src.sendMessage(Utils.getText("&aSuccessfully set the &6" + flagType.get().name() + "&a flag to &6allow"));
+
         } else if (flagValue.get().equalsIgnoreCase("deny")) {
-            region.get().getFlagTypes().add(flagType.get());
 
-            region.get().saveFlags();
-            src.sendMessage(Utils.getText("&aSuccessfully set the &6" + flagType.get().name() + "&a flag to &6" + flagValue.get()));
+            if (flagType.get().equals(FlagTypes.AUTO_BUTCHER)) {
+                if (!region.get().getFlagTypes().contains(flagType.get())) {
+                    src.sendMessage(Utils.getText("&cThat flag is already defined"));
+                    return CommandResult.success();
+                }
+
+                allowFlag(region.get(), flagType.get());
+            } else {
+                if (region.get().getFlagTypes().contains(flagType.get())) {
+                    src.sendMessage(Utils.getText("&cThat flag is already defined"));
+                    return CommandResult.success();
+                }
+
+                denyFlag(region.get(), flagType.get());
+            }
+
+            src.sendMessage(Utils.getText("&aSuccessfully set the &6" + flagType.get().name() + "&a flag to &6deny"));
+
         } else {
             src.sendMessage(Utils.getText("&cInvalid flag value. This should not happen. please report this bug"));
             return CommandResult.success();
         }
 
         return CommandResult.success();
+    }
+
+    static void denyFlag(Region region, FlagTypes flagType) {
+        region.getFlagTypes().add(flagType);
+        region.saveFlags();
+    }
+
+    static void allowFlag(Region region, FlagTypes flagType) {
+        region.getFlagTypes().remove(flagType);
+        region.saveFlags();
     }
 
     static CommandSpec build() {

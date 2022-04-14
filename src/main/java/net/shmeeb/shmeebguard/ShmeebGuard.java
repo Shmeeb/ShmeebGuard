@@ -20,7 +20,6 @@ import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.animal.Animal;
 import org.spongepowered.api.entity.living.monster.Monster;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.*;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
@@ -84,7 +83,7 @@ public class ShmeebGuard {
         registerEventListeners();
         registerCommands();
 
-        Task.builder().delay(10, TimeUnit.MINUTES).execute(task -> {
+        Task.builder().delay(15, TimeUnit.MINUTES).interval(15, TimeUnit.MINUTES).execute(task -> {
             int killed = 0;
 
             for (World world : Sponge.getServer().getWorlds()) {
@@ -93,7 +92,7 @@ public class ShmeebGuard {
                     if (entity instanceof Animal || entity instanceof Monster) {
 
                         for (Region region : ShmeebGuard.getRegionManager().getAllRegionsAtPosition(entity.getLocation())) {
-                            if (region.getFlagTypes().contains(FlagTypes.AUTOBUTCHER)) {
+                            if (region.getFlagTypes().contains(FlagTypes.AUTO_BUTCHER)) {
                                 entity.remove();
                                 killed++;
                             }
@@ -102,12 +101,7 @@ public class ShmeebGuard {
                 }
             }
 
-            for (Player onlinePlayer : Sponge.getServer().getOnlinePlayers()) {
-                if (onlinePlayer.hasPermission("shmeebguard.notify")) {
-                    onlinePlayer.sendMessage(Utils.getText("&7&oShmeebGuard AutoButcher cleared " + killed + " entities"));
-                }
-            }
-
+            Utils.verbose("&7&oShmeebGuard AutoButcher cleared " + killed + " entities");
 
         }).submit(instance);
     }
