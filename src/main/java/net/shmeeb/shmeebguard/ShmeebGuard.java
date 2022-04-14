@@ -17,8 +17,10 @@ import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.config.DefaultConfig;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.animal.Animal;
+import org.spongepowered.api.entity.living.animal.Wolf;
 import org.spongepowered.api.entity.living.monster.Monster;
 import org.spongepowered.api.event.*;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
@@ -90,6 +92,7 @@ public class ShmeebGuard {
                 for (Entity entity : world.getEntities()) {
 
                     if (entity instanceof Animal || entity instanceof Monster) {
+                        if (entity instanceof Wolf && entity.get(Keys.TAMED_OWNER).isPresent()) continue;
 
                         for (Region region : ShmeebGuard.getRegionManager().getAllRegionsAtPosition(entity.getLocation())) {
                             if (region.getFlagTypes().contains(FlagTypes.AUTO_BUTCHER)) {
