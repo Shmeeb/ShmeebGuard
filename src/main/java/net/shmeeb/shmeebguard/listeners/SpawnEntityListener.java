@@ -13,12 +13,13 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.event.EventListener;
 import org.spongepowered.api.event.entity.SpawnEntityEvent;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 public class SpawnEntityListener implements EventListener<SpawnEntityEvent> {
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onSpawn(SpawnEvent event) {
         if (!(event.action instanceof SpawnActionPokemon)) return;
 
@@ -49,6 +50,12 @@ public class SpawnEntityListener implements EventListener<SpawnEntityEvent> {
 
             } else if (entity instanceof Item) {
                 if (!region.getFlagTypes().contains(FlagTypes.DROP_ITEMS)) continue;
+
+                if (event.getCause().containsType(PluginContainer.class)) {
+                    PluginContainer plugin = event.getCause().first(PluginContainer.class).get();
+                    if (plugin.getId().equals("miscec") || plugin.getId().equals("eufranioutils")) return;
+                }
+
                 event.setCancelled(true);
                 return;
             }
