@@ -22,6 +22,7 @@ public class SpawnEntityListener implements EventListener<SpawnEntityEvent> {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onSpawn(SpawnEvent event) {
         if (!(event.action instanceof SpawnActionPokemon)) return;
+        event.action.getOrCreateEntity();
 
         MutableLocation spawnLocation = event.action.spawnLocation.location;
         Location<World> spongeLocation = new Location<>((World) spawnLocation.world, spawnLocation.pos.getX(), spawnLocation.pos.getY(), spawnLocation.pos.getZ());
